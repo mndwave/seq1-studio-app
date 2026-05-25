@@ -23,8 +23,8 @@ public class MainActivity extends BridgeActivity {
         // System bars match the cream Studio surface so the header logo never
         // disappears under a dark status bar. SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         // forces dark battery/clock glyphs so they remain readable on cream.
-        getWindow().setStatusBarColor(Color.parseColor("#F0E6C8"));
-        getWindow().setNavigationBarColor(Color.parseColor("#F0E6C8"));
+        getWindow().setStatusBarColor(Color.parseColor("#F4F1E8"));
+        getWindow().setNavigationBarColor(Color.parseColor("#F4F1E8"));
         View decor = getWindow().getDecorView();
         int flags = decor.getSystemUiVisibility()
                 | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
