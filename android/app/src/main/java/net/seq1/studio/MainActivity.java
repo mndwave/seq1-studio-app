@@ -19,16 +19,18 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // STUDIO-LIGHT-MODE-2026-05-25 (Kyle voice dictation):
-        // System bars match the cream Studio surface so the header logo never
-        // disappears under a dark status bar. SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        // forces dark battery/clock glyphs so they remain readable on cream.
-        getWindow().setStatusBarColor(Color.parseColor("#F4F1E8"));
+        // STUDIO-HEADER-DARK-2026-05-25 (Kyle voice dictation 3rd follow-up):
+        // The Studio web header is now ALWAYS DARK stone-950 — the body stays
+        // cream below it. Match the system bars to each side: status bar dark
+        // to blend with the header (white system icons read correctly on dark),
+        // navigation bar cream to blend with the cream body bottom. The
+        // LIGHT_NAVIGATION_BAR flag forces dark gesture-bar icons on cream.
+        getWindow().setStatusBarColor(Color.parseColor("#0C0A09"));
         getWindow().setNavigationBarColor(Color.parseColor("#F4F1E8"));
         View decor = getWindow().getDecorView();
         int flags = decor.getSystemUiVisibility()
-                | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+                & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR     // status bar is dark — white system icons stay white
+                | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR; // nav bar is cream — system icons must be dark
         decor.setSystemUiVisibility(flags);
 
         // Register Nostr/Amber bridge plugin before super.onCreate
