@@ -1,0 +1,105 @@
+name: Build APK
+
+# Triggers: only when native config changes (not on every web push —
+# the web app updates live via server URL mode; no APK rebuild needed).
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write  # required to create GitHub Releases
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate version
+        id: version
+        run: |
+          # Date-based version: YYYY.MM.DD.HHMM — Obtainium uses this to detect updates
+          VERSION=$(date -u +"%Y.%m.%d.%H%M")
+          # %y%j%H%M = 2-digit year + day-of-year + HHMM = max ~991440 (always < 2147483647)
+          VERSION_CODE=$(date -u +"%y%j%H%M")
+          echo "name=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "code=$VERSION_CODE" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Version: $VERSION (code: $VERSION_CODE)"
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Sync Capacitor (copies config into Android project)
+        run: npx cap sync android
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Make gradlew executable
+        run: chmod +x android/gradlew
+
+      - name: Decode keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > seq1-studio-release.keystore
+
+      - name: Disable WebContents debug flag
+        run: |
+          sed -i 's/webContentsDebuggingEnabled: true/webContentsDebuggingEnabled: false/' capacitor.config.ts
+
+      - name: Stamp version into build.gradle
+        env:
+          VERSION_NAME: ${{ steps.version.outputs.name }}
+          VERSION_CODE: ${{ steps.version.outputs.code }}
+        run: |
+          sed -i "s/versionCode [0-9]*/versionCode $VERSION_CODE/" android/app/build.gradle
+          sed -i "s/versionName \"[^\"]*\"/versionName \"$VERSION_NAME\"/" android/app/build.gradle
+          echo "Stamped versionCode=$VERSION_CODE versionName=$VERSION_NAME"
+
+      - name: Build Release APK
+        working-directory: android
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew assembleRelease --no-daemon
+
+      - name: Rename APK
+        run: cp android/app/build/outputs/apk/release/app-release.apk seq1-studio.apk
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: seq1-studio ${{ steps.version.outputs.name }}
+          body: Automated build
+          files: seq1-studio.apk
+          fail_on_unmatched_files: true
+
+      - name: Build summary
+        env:
+          VERSION: ${{ steps.version.outputs.name }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          {
+            echo "## APK Build Complete"
+            echo "- Version: $VERSION"
+            echo "- GitHub Release: $TAG"
+          } >> "$GITHUB_STEP_SUMMARY"

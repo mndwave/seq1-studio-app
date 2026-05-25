@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- >_ terminal prompt — retro-teal on transparent (background layer is stone-900) -->
+
+    <!-- ">" chevron: open stroke rendered as filled outline path -->
+    <!-- Outer shape: two arms of the chevron with 7dp stroke weight -->
+    <path
+        android:fillColor="#2dd4bf"
+        android:pathData="
+          M16,25 L16,32 L37,54 L16,76 L16,83
+          L23,83 L47,57.5 L47,50.5 L23,25 Z" />
+
+    <!-- "_" underline bar -->
+    <path
+        android:fillColor="#2dd4bf"
+        android:pathData="M55,74 L92,74 L92,81 L55,81 Z" />
+</vector>
