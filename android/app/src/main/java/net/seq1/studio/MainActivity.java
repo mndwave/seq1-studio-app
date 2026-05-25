@@ -37,6 +37,15 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(NostrSignerPlugin.class);
         super.onCreate(savedInstanceState);
 
+        // STUDIO-NO-DOUBLE-HEADER-2026-05-25 (Kyle screenshot — double SEQ1 Studio bar):
+        // The AppCompat theme inherits an ActionBar somewhere in the post-splash
+        // transition and renders the activity label as a title bar above the web
+        // header. Defensive: explicitly hide any support ActionBar.
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+        setTitle("");
+
         // Replace the WebViewClient with one that intercepts main-frame load
         // failures (e.g. no internet) and shows our styled offline page
         // instead of the default white-with-green-robot Android error screen.
