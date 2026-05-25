@@ -24,6 +24,13 @@
         <item name="android:statusBarColor">#0c0a09</item>
         <item name="android:navigationBarColor">#0c0a09</item>
         <item name="android:windowLightStatusBar">false</item>
+        <!-- STUDIO-NO-ACTIONBAR-GAP-2026-05-25 (Kyle screenshot — black gap above header):
+             Without postSplashScreenTheme, Android keeps Theme.SplashScreen active
+             after splash dismisses. That parent ultimately resolves through
+             AppCompat which reserves layout space for an ActionBar even when hidden,
+             leaving a dark strip between system status bar and the web header.
+             Switching to NoActionBar after splash reclaims that space. -->
+        <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
     </style>
 
 </resources>

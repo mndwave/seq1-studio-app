@@ -19,6 +19,12 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // STUDIO-NO-ACTIONBAR-GAP-2026-05-25 (Kyle screenshot — black gap above header):
+        // Force the no-action-bar theme BEFORE super.onCreate runs so the activity
+        // window never allocates ActionBar layout space. Belt + braces alongside
+        // postSplashScreenTheme in styles.xml.
+        setTheme(R.style.AppTheme_NoActionBar);
+
         // STUDIO-HEADER-DARK-2026-05-25 (Kyle voice dictation 3rd follow-up):
         // The Studio web header is now ALWAYS DARK stone-950 — the body stays
         // cream below it. Match the system bars to each side: status bar dark
