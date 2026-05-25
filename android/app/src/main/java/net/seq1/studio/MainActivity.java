@@ -3,6 +3,7 @@ package net.seq1.studio;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
@@ -18,10 +19,17 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Set bar colours before super.onCreate so they apply from the first frame.
-        // styles.xml alone is overridden by Theme.SplashScreen; Window API is authoritative.
-        getWindow().setStatusBarColor(Color.parseColor("#0c0a09"));
-        getWindow().setNavigationBarColor(Color.parseColor("#0c0a09"));
+        // STUDIO-LIGHT-MODE-2026-05-25 (Kyle voice dictation):
+        // System bars match the cream Studio surface so the header logo never
+        // disappears under a dark status bar. SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        // forces dark battery/clock glyphs so they remain readable on cream.
+        getWindow().setStatusBarColor(Color.parseColor("#F0E6C8"));
+        getWindow().setNavigationBarColor(Color.parseColor("#F0E6C8"));
+        View decor = getWindow().getDecorView();
+        int flags = decor.getSystemUiVisibility()
+                | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+        decor.setSystemUiVisibility(flags);
 
         // Register Nostr/Amber bridge plugin before super.onCreate
         registerPlugin(NostrSignerPlugin.class);

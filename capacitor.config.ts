@@ -33,7 +33,7 @@ const config: CapacitorConfig = {
       // in the web layer — no native/web handoff, no immersive bar flash.
       // backgroundColor still sets the WebView background colour so there is no
       // white flash while the WebView initialises before the first paint.
-      backgroundColor: '#0c0a09',
+      backgroundColor: '#F0E6C8',
       launchShowDuration: 0,
       autoHide: true,
     },
