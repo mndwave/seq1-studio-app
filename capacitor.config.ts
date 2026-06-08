@@ -27,6 +27,16 @@ const config: CapacitorConfig = {
     // adjustMarginsForEdgeToEdge removed from Cap 8 API — CSS env() approach is correct.
   },
   plugins: {
+    StatusBar: {
+      // Dark = white status bar icons (correct for stone-950 header).
+      // overlaysWebView: true = status bar is transparent overlay so
+      // env(safe-area-inset-top) returns the real status bar height and
+      // body padding-top (set by NativeAppShell + globals.css) pushes
+      // content below it. NativeAppShell also calls setOverlaysWebView
+      // at runtime so existing APKs without this config entry still work.
+      style: 'Dark',
+      overlaysWebView: true,
+    },
     SplashScreen: {
       // Disabled: launchShowDuration 0 means the native splash is never shown.
       // The AppLoader in studio.seq1.net handles the entire loading animation
