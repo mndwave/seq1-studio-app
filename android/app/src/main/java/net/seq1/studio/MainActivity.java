@@ -1,9 +1,7 @@
 package net.seq1.studio;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
@@ -25,19 +23,14 @@ public class MainActivity extends BridgeActivity {
         // postSplashScreenTheme in styles.xml.
         setTheme(R.style.AppTheme_NoActionBar);
 
-        // STUDIO-HEADER-DARK-2026-05-25 (Kyle voice dictation 3rd follow-up):
-        // The Studio web header is now ALWAYS DARK stone-950 — the body stays
-        // cream below it. Match the system bars to each side: status bar dark
-        // to blend with the header (white system icons read correctly on dark),
-        // navigation bar cream to blend with the cream body bottom. The
-        // LIGHT_NAVIGATION_BAR flag forces dark gesture-bar icons on cream.
-        getWindow().setStatusBarColor(Color.parseColor("#0C0A09"));
-        getWindow().setNavigationBarColor(Color.parseColor("#F4F1E8"));
-        View decor = getWindow().getDecorView();
-        int flags = decor.getSystemUiVisibility()
-                & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR     // status bar is dark — white system icons stay white
-                | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR; // nav bar is cream — system icons must be dark
-        decor.setSystemUiVisibility(flags);
+        // STUDIO-LEGACY-WINDOW-FLAGS-REMOVED-2026-06-09 (healer:e9b3d618):
+        // The 2026-05-25 setStatusBarColor/setNavigationBarColor/setSystemUiVisibility
+        // block conflicted with Capacitor 8 edge-to-edge after biometric AuthActivity
+        // resume — env(safe-area-inset-top) collapsed to 0 in the WebView. System bar
+        // appearance is owned by the web layer (html:has(.studio-root) background) and
+        // the Capacitor StatusBar config (style: Dark, overlaysWebView: true). Do NOT
+        // reintroduce legacy window flags here — see
+        // memory/studio-biometric-root-layout-antipattern.md.
 
         // Register Nostr/Amber bridge plugin before super.onCreate
         registerPlugin(NostrSignerPlugin.class);
