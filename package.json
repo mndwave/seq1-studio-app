@@ -15,7 +15,6 @@
     "@capacitor/android": "8.4.0",
     "@capacitor/app": "^8.1.0",
     "@capacitor/camera": "^8.2.0",
-    "@capacitor/cli": "8.4.0",
     "@capacitor/clipboard": "^8.0.1",
     "@capacitor/core": "8.4.0",
     "@capacitor/filesystem": "^8.1.2",
@@ -24,10 +23,12 @@
     "@capacitor/local-notifications": "^8.2.0",
     "@capacitor/network": "^8.0.1",
     "@capacitor/preferences": "^8.0.1",
+    "@capacitor/push-notifications": "^8.1.1",
     "@capacitor/splash-screen": "^8.0.1",
     "@capacitor/status-bar": "^8.0.2"
   },
   "devDependencies": {
+    "@capacitor/cli": "8.4.0",
     "typescript": "^6.0.3"
   },
   "overrides": {
