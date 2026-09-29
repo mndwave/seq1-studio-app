@@ -1,4 +1,6 @@
-# Capacitor "Server URL" Pattern — seq1-sessions-app
+# Capacitor "Server URL" Pattern — seq1-studio-app
+
+> 2026-09-29 (healer:62f81746): this guide was copied from the retired Capacitor SEQ1 Sessions app (removed for the native ~/seq1-sessions-native). Paths now point at THIS repo; the `seq1_sessions_app` credentials-block name and any `sessions.seq1.net` example values are historical residue from that copy.
 
 ## What this is
 
@@ -56,7 +58,7 @@ genuinely native changes (a new Android permission, an icon update, a new hardwa
 
 ## Local Build — Temporary Method Until GitHub CI Is Wired Up
 
-Until `seq1-sessions-app` is on GitHub and Actions are configured, build the APK locally.
+Until `seq1-studio-app` is on GitHub and Actions are configured, build the APK locally.
 
 ### Requirements
 
@@ -68,12 +70,12 @@ Until `seq1-sessions-app` is on GitHub and Actions are configured, build the APK
 ### Build and upload (release APK)
 
 ```bash
-cd ~/seq1-sessions-app
+cd ~/seq1-studio-app
 
 # 1. Sync capacitor config into Android project
 npx cap sync android --no-open
 
-# 2. Build release APK (requires keystore at seq1-sessions-release.keystore)
+# 2. Build release APK (requires keystore at seq1-studio-release.keystore)
 cd android
 JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 ./gradlew assembleRelease --no-daemon
 cd ..
@@ -124,15 +126,15 @@ in `build.gradle`). Debug APKs cause the Obtainium signing cert trap (see above)
 **Signing secrets** (all set — do not need to redo):
 `KEYSTORE_BASE64` · `KEYSTORE_PASSWORD` · `KEY_ALIAS` · `KEY_PASSWORD`
 
-**Release keystore:** `~/seq1-sessions-app/seq1-sessions-release.keystore`
+**Release keystore:** `~/seq1-studio-app/seq1-studio-release.keystore`
 Generated 2026-05-15. Credentials in `~/seq1-healer/global.conf` under `[seq1_sessions_app]`.
 **⚠️ Never delete this file — loss means you cannot update the installed app without users uninstalling.**
 
 **Triggering a build manually (no code change):**
 ```bash
 export GH_TOKEN=<mndwave_pat>  # see global.conf [github] mndwave_pat
-gh workflow run build-apk.yml --repo mndwave/seq1-sessions-app
-gh run list --repo mndwave/seq1-sessions-app --limit 3
+gh workflow run build-apk.yml --repo mndwave/seq1-studio-app
+gh run list --repo mndwave/seq1-studio-app --limit 3
 ```
 
 ## GitHub Actions secrets required
@@ -236,7 +238,7 @@ Debug APKs work fine for personal use but show `(debug)` in the installer and ha
 To build a signed release:
 ```bash
 # Generate keystore once (store this file safely — loss = can't update the app)
-keytool -genkey -v -keystore seq1-sessions-release.keystore \
+keytool -genkey -v -keystore seq1-studio-release.keystore \
   -alias seq1sessions -keyalg RSA -keysize 2048 -validity 10950 \
   -dname "CN=SEQ1 Sessions, OU=SEQ1, O=SEQ1, L=London, S=England, C=GB" \
   -storepass yourpassword -keypass yourpassword
@@ -331,7 +333,7 @@ Handle this gracefully — show a settings deep-link to let the user re-grant.
 ## File structure
 
 ```
-seq1-sessions-app/
+seq1-studio-app/
 ├── capacitor.config.ts          ← Server URL + plugin config
 ├── www/                         ← Stub (not served — server.url overrides)
 │   └── index.html
@@ -362,7 +364,7 @@ without understanding the anti-pattern each one fixes.
 ```groovy
 signingConfigs {
     release {
-        storeFile file("../../seq1-sessions-release.keystore")
+        storeFile file("../../seq1-studio-release.keystore")
         storePassword System.getenv("KEYSTORE_PASSWORD") ?: ""
         keyAlias System.getenv("KEY_ALIAS") ?: ""
         keyPassword System.getenv("KEY_PASSWORD") ?: ""
@@ -389,8 +391,8 @@ the debug APK installed, Android silently rejects the release APK as an update �
 "complete" but the old APK is still what's running. Obtainium then re-prompts on every check
 forever (infinite update loop).
 
-**Keystore location:** `seq1-sessions-app/seq1-sessions-release.keystore`
-Generated with: `keytool -genkey -v -keystore seq1-sessions-release.keystore -alias seq1sessions -keyalg RSA -keysize 2048 -validity 10950 ...`
+**Keystore location:** `seq1-studio-app/seq1-studio-release.keystore`
+Generated with: `keytool -genkey -v -keystore seq1-studio-release.keystore -alias seq1sessions -keyalg RSA -keysize 2048 -validity 10950 ...`
 **KEEP THIS FILE. Loss = can never update the app for existing users without full uninstall.**
 
 ---
@@ -633,7 +635,7 @@ again. This repeats forever.
 
 ### Prevention going forward
 
-The release keystore (`seq1-sessions-release.keystore`) must be used for every APK build, forever.
+The release keystore (`seq1-studio-release.keystore`) must be used for every APK build, forever.
 If the keystore is lost, existing users can never receive updates via Obtainium (or any other
 update mechanism) — they must uninstall and reinstall manually.
 
@@ -749,7 +751,7 @@ from the `BUILD_KEYSTORE_BASE64` secret — this produces the correctly signed r
 # 2. Copy result to ~/seq1-healer/seq1sessions-final-512.png
 
 # 3. Generate all mipmap sizes
-RES=~/seq1-sessions-app/android/app/src/main/res
+RES=~/seq1-studio-app/android/app/src/main/res
 SRC=~/seq1-healer/seq1sessions-final-512.png
 
 for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
@@ -764,7 +766,7 @@ for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
 done
 
 # 4. Commit and push — GitHub Actions builds the APK
-cd ~/seq1-sessions-app
+cd ~/seq1-studio-app
 git add android/app/src/main/res/mipmap-*/ic_launcher*.png
 git commit -m "feat(icon): ..."
 git push origin main
