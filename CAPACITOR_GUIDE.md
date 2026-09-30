@@ -1,3 +1,5 @@
+> **RETIRED 2026-09-30:** this Capacitor shell is replaced by the native app in `~/seq1-studio-native` (see README.md). Nothing here is maintained.
+
 # Capacitor "Server URL" Pattern — seq1-studio-app
 
 > 2026-09-29 (healer:62f81746): this guide was copied from the retired Capacitor SEQ1 Sessions app (removed for the native ~/seq1-sessions-native). Paths now point at THIS repo; the `seq1_sessions_app` credentials-block name and any `sessions.seq1.net` example values are historical residue from that copy.
